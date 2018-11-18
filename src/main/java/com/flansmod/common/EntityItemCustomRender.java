@@ -29,4 +29,12 @@ public class EntityItemCustomRender extends EntityItem
 	{
 		super(w, x, y, z);
 	}
+
+	/**
+	 * 返回True，则会被判定交互，比如右键交互能判定到
+	 */
+	public boolean canBeCollidedWith()
+	{
+		return true;
+	}
 }
