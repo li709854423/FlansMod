@@ -20,6 +20,7 @@ import com.flansmod.common.tools.ToolType;
 import com.flansmod.common.types.EnumType;
 import com.flansmod.common.types.InfoType;
 import com.flansmod.common.types.TypeFile;
+import cyano.lootable.LootableBodies;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.CommandHandler;
@@ -141,10 +142,10 @@ public class FlansMod
 	{
 		log = event.getModLog();
 		log.debug("Preinitialising Flan's mod.");
-		
+
 		MinecraftForge.EVENT_BUS.register(INSTANCE);
 		
-		proxy.preInit();
+		proxy.preInit(event);
 		proxy.registerRenderers();
 		
 		configFile = new Configuration(event.getSuggestedConfigurationFile());
@@ -203,14 +204,16 @@ public class FlansMod
 	public void init(FMLInitializationEvent event)
 	{
 		log.info("Initialising Flan's Mod.");
+		//初始化尸体
+		LootableBodies.init(event);
 
 		//Do proxy loading
 		proxy.init();
 				
 		//Initialising handlers
 		packetHandler.initialise();
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CommonGuiHandler());		
-		
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CommonGuiHandler());
+
 		// Really randomise the rewards generator
 		rewardsRandom = new Random();
 		rewardsRandom.setSeed(System.currentTimeMillis() ^ 0x5AB49DE08DE3B1DFl);
@@ -238,7 +241,7 @@ public class FlansMod
 	public void registerRecipes(RegistryEvent.Register<IRecipe> event)
 	{		
 		log.info("Registering Recipes.");
-		
+
 		// Recipes
 		for (InfoType type : InfoType.infoTypes.values())
 		{
@@ -318,7 +321,6 @@ public class FlansMod
 	public void registerEntities(RegistryEvent.Register<EntityEntry> event)
 	{
 		log.info("Registering Entities");
-		
 		event.getRegistry().register(new EntityEntry(EntityFlagpole.class, "Flagpole").setRegistryName("Flagpole"));
 		event.getRegistry().register(new EntityEntry(EntityFlag.class, "Flag").setRegistryName("Flag"));
 		event.getRegistry().register(new EntityEntry(EntityTeamItem.class, "TeamsItem").setRegistryName("TeamsItem"));
@@ -334,7 +336,6 @@ public class FlansMod
 		event.getRegistry().register(new EntityEntry(EntityGrenade.class, "Grenade").setRegistryName("Grenade"));
 		event.getRegistry().register(new EntityEntry(EntityMG.class, "MG").setRegistryName("MG"));
 		event.getRegistry().register(new EntityEntry(EntityAAGun.class, "AAGun").setRegistryName("AAGun"));
-	
 		EntityRegistry.registerModEntity(new ResourceLocation("flansmod:CustomItem"), 	EntityItemCustomRender.class, "CustomItem", 89, this, 100, 20, true);
 		EntityRegistry.registerModEntity(new ResourceLocation("flansmod:Plane"), 		EntityPlane.class, "Plane", 90, this, 250, 3, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("flansmod:MG"), 			EntityMG.class, "MG", 91, this, 40, 5, true);
@@ -351,7 +352,7 @@ public class FlansMod
 		EntityRegistry.registerModEntity(new ResourceLocation("flansmod:Mecha"), 		EntityMecha.class, "Mecha", 102, this, 250, 20, false);
 		EntityRegistry.registerModEntity(new ResourceLocation("flansmod:Wheel"), 		EntityWheel.class, "Wheel", 103, this, 250, 20, false);
 	}
-	
+
 	@EventHandler
 	public void registerLoot(LootTableLoadEvent event)
 	{

@@ -7,14 +7,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import cyano.lootable.LootableBodies;
+import cyano.lootable.entities.EntityLootableBody;
+import cyano.lootable.graphics.CorpseContainer;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import com.flansmod.common.driveables.ContainerDriveableInventory;
@@ -67,8 +73,10 @@ public class CommonProxy
 	}
 	
 	/** A ton of client only methods follow */
-	public void preInit()
+	public void preInit(FMLPreInitializationEvent event)
 	{
+		//初始化尸体
+		LootableBodies.preInit(event, FMLCommonHandler.instance().getMinecraftServerInstance().getDataDirectory());
 	}
 	
 	public void init()
@@ -144,6 +152,9 @@ public class CommonProxy
 		case 11 : return null; //Armour box. No server side
 		case 12 : return new ContainerDriveableInventory(player.inventory, world, ((EntitySeat)player.getRidingEntity()).driveable, 3);
 		case 13: return new ContainerPaintjobTable(player.inventory, world, (TileEntityPaintjobTable)world.getTileEntity(new BlockPos(x, y, z)));
+			case 14:
+				Entity e = world.getEntityByID(x);
+				if (e instanceof EntityLootableBody)return new CorpseContainer(player.inventory, (IInventory) e);
 		}
 		return null;
 	}
