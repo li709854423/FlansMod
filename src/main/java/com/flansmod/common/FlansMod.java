@@ -203,7 +203,9 @@ public class FlansMod
 		
 		//Force Minecraft to reload all resources in order to load content pack resources.
 		proxy.forceReload();
-		
+
+		CustomInitFlan.preInit();
+
 		log.debug("Preinitializing complete.");
 	}
 	

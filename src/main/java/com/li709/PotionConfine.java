@@ -29,7 +29,6 @@ public class PotionConfine extends Potion {
     @Override
     public void applyAttributesModifiersToEntity(EntityLivingBase entityLivingBaseIn, AbstractAttributeMap attributeMapIn, int amplifier) {
         PotionEffect potionEffect = entityLivingBaseIn.getActivePotionMap().get(this);
-        System.out.println("添加uuid"+entityLivingBaseIn.getUniqueID());
         BleedingManager.addBleeding(entityLivingBaseIn.getUniqueID(),potionEffect);
     }
 
@@ -38,7 +37,6 @@ public class PotionConfine extends Potion {
      */
     @Override
     public void removeAttributesModifiersFromEntity(EntityLivingBase entityLivingBaseIn, AbstractAttributeMap attributeMapIn, int amplifier) {
-        System.out.println("删除uuid"+entityLivingBaseIn.getUniqueID());
         BleedingManager.removeBleeding(entityLivingBaseIn.getUniqueID());
     }
 
