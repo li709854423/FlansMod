@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.li709.proxy.ClientProxyCustom;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -127,6 +128,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void preInit()
 	{
+		ClientProxyCustom.preInit();
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
@@ -365,7 +367,8 @@ public class ClientProxy extends CommonProxy
 			case 12: return new GuiDriveableInventory(player.inventory, world, ((EntitySeat)player.getRidingEntity()).driveable, 3);
 			case 13: return new GuiPaintjobTable(player.inventory, world, (TileEntityPaintjobTable)world.getTileEntity(new BlockPos(x, y, z)));
 		}
-		return null;
+
+		return ClientProxyCustom.getClientGui(ID, player, world, x, y, z);
 	}
 	
 	/**

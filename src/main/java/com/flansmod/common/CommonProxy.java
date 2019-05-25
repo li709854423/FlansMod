@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.li709.proxy.ClientProxyCustom;
+import com.li709.proxy.CommonProxyCustom;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -72,6 +74,7 @@ public class CommonProxy
 	 */
 	public void preInit()
 	{
+		CommonProxyCustom.preInit();
 	}
 	
 	public void init()
@@ -152,7 +155,7 @@ public class CommonProxy
 			case 12: return new ContainerDriveableInventory(player.inventory, world, ((EntitySeat)player.getRidingEntity()).driveable, 3);
 			case 13: return new ContainerPaintjobTable(player.inventory, world, (TileEntityPaintjobTable)world.getTileEntity(new BlockPos(x, y, z)));
 		}
-		return null;
+		return CommonProxyCustom.getServerGui(ID, player, world, x, y, z);
 	}
 	
 	/**

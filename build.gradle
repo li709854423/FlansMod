@@ -171,3 +171,7 @@ build {
     dependsOn outputJar
     dependsOn outputPacks
 }
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+
+}

@@ -80,7 +80,7 @@ public class FlansMod
 	public static boolean DEBUG = false;
 	public static Configuration configFile;
 	public static final String MODID = "flansmod";
-	public static final String VERSION = "@VERSION@";
+	public static final String VERSION = "5.5.2";
 	@Instance(MODID)
 	public static FlansMod INSTANCE;
 	
