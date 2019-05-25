@@ -1,5 +1,8 @@
 package com.flansmod.common.tools;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -8,8 +11,8 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -22,7 +25,7 @@ public class EntityParachute extends Entity implements IEntityAdditionalSpawnDat
 {
 	public ToolType type;
 	
-	public EntityParachute(World w) 
+	public EntityParachute(World w)
 	{
 		super(w);
 		ignoreFrustumCheck = true;
@@ -35,7 +38,7 @@ public class EntityParachute extends Entity implements IEntityAdditionalSpawnDat
 		type = t;
 		setPosition(player.posX, player.posY, player.posZ);
 	}
-
+	
 	@Override
 	public void onUpdate()
 	{
@@ -63,7 +66,7 @@ public class EntityParachute extends Entity implements IEntityAdditionalSpawnDat
 			
 			prevRotationYaw = rotationYaw;
 			rotationYaw = getControllingPassenger().rotationYaw;
-		}		
+		}
 		
 		motionX *= 0.8F;
 		motionZ *= 0.8F;
@@ -78,7 +81,7 @@ public class EntityParachute extends Entity implements IEntityAdditionalSpawnDat
 	
 	@Override
 	public void fall(float par1, float k)
-    {
+	{
 		//Ignore fall damage
 	}
 	
@@ -90,37 +93,44 @@ public class EntityParachute extends Entity implements IEntityAdditionalSpawnDat
 	}
 	
 	@Override
-	protected void entityInit() 
+	protected void entityInit()
 	{
 	}
 	
+	@Nullable
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound tags) 
+	public Entity getControllingPassenger()
+	{
+		List<Entity> list = this.getPassengers();
+		return list.isEmpty() ? null : list.get(0);
+	}
+	
+	@Override
+	protected void readEntityFromNBT(NBTTagCompound tags)
 	{
 		type = ToolType.getType(tags.getString("Type"));
 	}
-
+	
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound tags) 
+	protected void writeEntityToNBT(NBTTagCompound tags)
 	{
 		tags.setString("Type", type.shortName);
 	}
-
+	
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target)
 	{
-		ItemStack stack = new ItemStack(type.item, 1, 0);
-		return stack;
+		return new ItemStack(type.item, 1, 0);
 	}
-
+	
 	@Override
-	public void writeSpawnData(ByteBuf buffer) 
+	public void writeSpawnData(ByteBuf buffer)
 	{
 		ByteBufUtils.writeUTF8String(buffer, type.shortName);
 	}
-
+	
 	@Override
-	public void readSpawnData(ByteBuf additionalData) 
+	public void readSpawnData(ByteBuf additionalData)
 	{
 		type = ToolType.getType(ByteBufUtils.readUTF8String(additionalData));
 	}

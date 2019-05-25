@@ -4,6 +4,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+
 import com.flansmod.common.FlansMod;
 import com.flansmod.common.PlayerData;
 import com.flansmod.common.PlayerHandler;
@@ -17,37 +32,20 @@ import com.flansmod.common.guns.ItemGun;
 import com.flansmod.common.teams.Team;
 import com.flansmod.common.vector.Vector3f;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.server.FMLServerHandler;
-
-public class FlansModRaytracer 
+public class FlansModRaytracer
 {
 	
 	public static List<BulletHit> Raytrace(World world, Entity playerToIgnore, boolean canHitSelf, Entity entityToIgnore, Vector3f origin, Vector3f motion, int pingOfShooter)
 	{
 		//Create a list for all bullet hits
-		ArrayList<BulletHit> hits = new ArrayList<BulletHit>();
-				
+		ArrayList<BulletHit> hits = new ArrayList<>();
+		
 		float speed = motion.length();
 		
 		//Iterate over all entities
 		for(int i = 0; i < world.loadedEntityList.size(); i++)
 		{
-			Object obj = world.loadedEntityList.get(i);
+			Entity obj = world.loadedEntityList.get(i);
 			boolean shouldDoNormalHitDetect = true;
 			//Get driveables
 			if(obj instanceof EntityDriveable)
@@ -102,30 +100,52 @@ public class FlansModRaytracer
 					}
 				}
 			}
-
+			
 			if(shouldDoNormalHitDetect)
 			{
-				Entity entity = (Entity)obj;
-				if(entity != entityToIgnore && entity != playerToIgnore 
-						&& !entity.isDead 
-						&& (entity instanceof EntityLivingBase || entity instanceof EntityAAGun || entity instanceof EntityGrenade) 
-						&& entity.getEntityBoundingBox() != null)
+				Entity entity = obj;
+				if(entity != entityToIgnore && entity != playerToIgnore
+						&& !entity.isDead
+						&& (entity instanceof EntityLivingBase || entity instanceof EntityAAGun || entity instanceof EntityGrenade))
 				{
 					RayTraceResult mop = entity.getEntityBoundingBox().calculateIntercept(origin.toVec3(), new Vec3d(origin.x + motion.x, origin.y + motion.y, origin.z + motion.z));
 					if(mop != null)
 					{
-						Vector3f hitPoint = new Vector3f(mop.hitVec.x - origin.x, mop.hitVec.y - origin.y, mop.hitVec.z - origin.z);
-						float hitLambda = 1F;
-						if(motion.x != 0F)
-							hitLambda = hitPoint.x / motion.x;
-						else if(motion.y != 0F)
-							hitLambda = hitPoint.y / motion.y;
-						else if(motion.z != 0F)
-							hitLambda = hitPoint.z / motion.z;
-						if(hitLambda < 0)
-							hitLambda = -hitLambda;
+						Entity[] parts = entity.getParts();
+						boolean hit = true;
+						// If parts exist, the intercepted part is calculated and used instead of the whole entity.
+						// If no part is intercepted, the entity itself is not hit
+						if(parts != null)
+						{
+							hit = false;
+							for(Entity part : parts)
+							{
+								RayTraceResult result = part.getEntityBoundingBox().calculateIntercept(origin.toVec3(), new Vec3d(origin.x + motion.x, origin.y + motion.y, origin.z + motion.z));
+								if(result != null)
+								{
+									mop = result;
+									entity = part;
+									hit = true;
+									break;
+								}
+							}
+						}
 						
-						hits.add(new EntityHit(entity, hitLambda));
+						if(hit)
+						{
+							Vector3f hitPoint = new Vector3f(mop.hitVec.x - origin.x, mop.hitVec.y - origin.y, mop.hitVec.z - origin.z);
+							float hitLambda = 1F;
+							if(motion.x != 0F)
+								hitLambda = hitPoint.x / motion.x;
+							else if(motion.y != 0F)
+								hitLambda = hitPoint.y / motion.y;
+							else if(motion.z != 0F)
+								hitLambda = hitPoint.z / motion.z;
+							if(hitLambda < 0)
+								hitLambda = -hitLambda;
+							
+							hits.add(new EntityHit(entity, hitLambda));
+						}
 					}
 				}
 			}
@@ -173,7 +193,7 @@ public class FlansModRaytracer
 		
 		ItemStack itemstack = hand == EnumHand.OFF_HAND ? player.getHeldItemOffhand() : player.getHeldItemMainhand();
 		
-		if(itemstack != null && itemstack.getItem() instanceof ItemGun)
+		if(itemstack.getItem() instanceof ItemGun)
 		{
 			GunType gunType = ((ItemGun)itemstack.getItem()).GetType();
 			AttachmentType barrelType = gunType.getBarrel(itemstack);
@@ -183,19 +203,21 @@ public class FlansModRaytracer
 		
 		return new Vector3f(player.getPositionEyes(0.0f));
 	}
-
+	
 	public static abstract class BulletHit implements Comparable<BulletHit>
 	{
-		/** The time along the ray that the intersection happened. Between 0 and 1 */
+		/**
+		 * The time along the ray that the intersection happened. Between 0 and 1
+		 */
 		public float intersectTime;
 		
 		public BulletHit(float f)
 		{
 			intersectTime = f;
 		}
-
+		
 		@Override
-		public int compareTo(BulletHit other) 
+		public int compareTo(BulletHit other)
 		{
 			if(intersectTime < other.intersectTime)
 				return -1;
@@ -207,40 +229,46 @@ public class FlansModRaytracer
 		public abstract Entity GetEntity();
 	}
 	
-	public static class BlockHit extends BulletHit 
+	public static class BlockHit extends BulletHit
 	{
 		public RayTraceResult raytraceResult;
 		
-		public BlockHit(RayTraceResult mop, float f) 
+		public BlockHit(RayTraceResult mop, float f)
 		{
 			super(f);
 			raytraceResult = mop;
 		}
-
+		
 		@Override
-		public Entity GetEntity() { return null; }
+		public Entity GetEntity()
+		{
+			return null;
+		}
 	}
 	
-	public static class EntityHit extends BulletHit 
+	public static class EntityHit extends BulletHit
 	{
 		public Entity entity;
 		
-		public EntityHit(Entity e, float f) 
+		public EntityHit(Entity e, float f)
 		{
 			super(f);
 			entity = e;
 		}
 		
 		@Override
-		public Entity GetEntity() { return entity; }
+		public Entity GetEntity()
+		{
+			return entity;
+		}
 	}
 	
-	public static class DriveableHit extends BulletHit 
+	public static class DriveableHit extends BulletHit
 	{
 		public EntityDriveable driveable;
 		public EnumDriveablePart part;
 		
-		public DriveableHit(EntityDriveable d, EnumDriveablePart p, float f) 
+		public DriveableHit(EntityDriveable d, EnumDriveablePart p, float f)
 		{
 			super(f);
 			part = p;
@@ -248,14 +276,21 @@ public class FlansModRaytracer
 		}
 		
 		@Override
-		public Entity GetEntity() { return driveable; }
+		public Entity GetEntity()
+		{
+			return driveable;
+		}
 	}
 	
-	/** Raytracing will return a load of these objects containing hit data. These will then be compared against each other and against any block hits
-	 * The hit that occurs first along the path of the bullet is the one that is acted upon. Unless the bullet has penetration of course */
+	/**
+	 * Raytracing will return a load of these objects containing hit data. These will then be compared against each other and against any block hits
+	 * The hit that occurs first along the path of the bullet is the one that is acted upon. Unless the bullet has penetration of course
+	 */
 	public static class PlayerBulletHit extends BulletHit
 	{
-		/** The hitbox hit */
+		/**
+		 * The hitbox hit
+		 */
 		public PlayerHitbox hitbox;
 		
 		public PlayerBulletHit(PlayerHitbox box, float f)
@@ -265,7 +300,10 @@ public class FlansModRaytracer
 		}
 		
 		@Override
-		public Entity GetEntity() { return hitbox.player; }
+		public Entity GetEntity()
+		{
+			return hitbox.player;
+		}
 	}
 	
 	private static byte GetClassType(BulletHit hit)
@@ -276,7 +314,7 @@ public class FlansModRaytracer
 		if(hit instanceof PlayerBulletHit) return 3;
 		return -1;
 	}
-
+	
 	public static void WriteToBuffer(BulletHit hit, ByteBuf buffer)
 	{
 		buffer.writeByte(GetClassType(hit));
@@ -372,7 +410,7 @@ public class FlansModRaytracer
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
-			for(World world :FMLCommonHandler.instance().getMinecraftServerInstance().worlds)
+			for(World world : FMLCommonHandler.instance().getMinecraftServerInstance().worlds)
 			{
 				Entity entity = world.getEntityByID(id);
 				if(entity != null)
@@ -386,5 +424,5 @@ public class FlansModRaytracer
 		
 		return null;
 	}
-
+	
 }

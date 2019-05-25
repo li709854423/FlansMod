@@ -21,20 +21,30 @@ import com.flansmod.common.driveables.EntitySeat;
 import com.flansmod.common.driveables.mechas.EntityMecha;
 import com.flansmod.common.network.PacketDriveableGUI;
 
-public class GuiDriveableRepair extends GuiScreen 
+public class GuiDriveableRepair extends GuiScreen
 {
 	private static final ResourceLocation texture = new ResourceLocation("flansmod", "gui/repair.png");
 	
-	/** The player using this GUI */
+	/**
+	 * The player using this GUI
+	 */
 	private EntityPlayer driver;
-	/** The driveable (s)he is driving */
+	/**
+	 * The driveable (s)he is driving
+	 */
 	private EntityDriveable driving;
-	/** The list of parts that are actually damageable*/
-	private ArrayList<DriveablePart> partsToDraw = new ArrayList<DriveablePart>();
+	/**
+	 * The list of parts that are actually damageable
+	 */
+	private ArrayList<DriveablePart> partsToDraw = new ArrayList<>();
 	
-	/** Item renderer */
+	/**
+	 * Item renderer
+	 */
 	private static RenderItem itemRenderer;
-	/** Gui origin */
+	/**
+	 * Gui origin
+	 */
 	private int guiOriginX, guiOriginY;
 	
 	public GuiDriveableRepair(EntityPlayer player)
@@ -42,26 +52,26 @@ public class GuiDriveableRepair extends GuiScreen
 		super();
 		driver = player;
 		driving = ((EntitySeat)player.getRidingEntity()).driveable;
-    	for(DriveablePart part : driving.getDriveableData().parts.values())
-    	{
-    		//Check to see if the part is actually damageable
-    		if(part.maxHealth > 0)
-    		{
-    			//Add it to the list of parts to draw
-    			partsToDraw.add(part);  				
-    		}
-    	}	
+		for(DriveablePart part : driving.getDriveableData().parts.values())
+		{
+			//Check to see if the part is actually damageable
+			if(part.maxHealth > 0)
+			{
+				//Add it to the list of parts to draw
+				partsToDraw.add(part);
+			}
+		}
 	}
 	
 	@Override
 	public void initGui()
 	{
 		super.initGui();
-    	for(int i = 0; i < partsToDraw.size(); i++)
-    	{
-    		buttonList.add(new GuiButton(i, 0, 0, 55, 20, "Repair"));
-    	}
-    	itemRenderer = mc.getRenderItem();
+		for(int i = 0; i < partsToDraw.size(); i++)
+		{
+			buttonList.add(new GuiButton(i, 0, 0, 55, 20, "Repair"));
+		}
+		itemRenderer = mc.getRenderItem();
 	}
 
 	@Override
@@ -76,9 +86,10 @@ public class GuiDriveableRepair extends GuiScreen
 		for(int i = 0; i < partsToDraw.size(); i++)
 		{
 			DriveablePart part = partsToDraw.get(i);
-			GuiButton button = (GuiButton)buttonList.get(i);
+			GuiButton button = buttonList.get(i);
+			button.visible = part.health <= 0;
 			button.x = guiOriginX + 9;
-			button.y = part.health <= 0 ? guiOriginY + y : -1000;
+			button.y = guiOriginY + y;
 			y += part.health <= 0 ? 40 : 20;
 		}
 	}
@@ -161,9 +172,9 @@ public class GuiDriveableRepair extends GuiScreen
 						for(int m = 0; m < temporaryInventory.getSizeInventory(); m++)
 						{
 							//Get the stack in each slot
-							ItemStack stackInSlot = temporaryInventory.getStackInSlot(m);
+							ItemStack stackInSlot = temporaryInventory.getStackInSlot(m).copy();
 							//If the stack is what we want
-							if(stackInSlot != null && stackInSlot.getItem() == stackNeeded.getItem() && stackInSlot.getItemDamage() == stackNeeded.getItemDamage())
+							if(stackInSlot.getItem() == stackNeeded.getItem() && stackInSlot.getItemDamage() == stackNeeded.getItemDamage())
 							{
 								//Work out the amount to take from the stack
 								int amountFound = Math.min(stackInSlot.getCount(), stackNeeded.getCount() - totalAmountFound);
@@ -200,8 +211,8 @@ public class GuiDriveableRepair extends GuiScreen
 
 	@Override
 	protected void mouseClicked(int i, int j, int k) throws IOException
-    {
-        super.mouseClicked(i, j, k);
+	{
+		super.mouseClicked(i, j, k);
 		int m = i - guiOriginX;
 		int n = j - guiOriginY;
 		if(m > 185 && m < 195 && n > 5 && n < 15)
@@ -211,10 +222,12 @@ public class GuiDriveableRepair extends GuiScreen
 				(driver).openGui(FlansMod.INSTANCE, 10, driver.world, driving.chunkCoordX, driving.chunkCoordY, driving.chunkCoordZ);
 			}
 			else
-			 mc.displayGuiScreen(new GuiDriveableMenu(driver.inventory, driver.world, driving));
+				mc.displayGuiScreen(new GuiDriveableMenu(driver.inventory, driver.world, driving));
 	}
 
-	/** Item stack renderering method */
+	/**
+	 * Item stack renderering method
+	 */
 	private void drawSlotInventory(ItemStack itemstack, int i, int j)
 	{
 		if(itemstack == null || itemstack.isEmpty())

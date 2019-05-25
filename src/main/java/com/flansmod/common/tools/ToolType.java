@@ -11,7 +11,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -20,34 +19,52 @@ import com.flansmod.common.FlansMod;
 import com.flansmod.common.types.InfoType;
 import com.flansmod.common.types.TypeFile;
 
-public class ToolType extends InfoType 
+public class ToolType extends InfoType
 {
-	public static HashMap<String, ToolType> tools = new HashMap<String, ToolType>();
+	public static HashMap<String, ToolType> tools = new HashMap<>();
 	
 	@SideOnly(value = Side.CLIENT)
 	/** The parachute model */
 	public ModelBase model;
 	
-	/** Boolean switches that decide whether the tool should heal players and / or driveables */
+	/**
+	 * Boolean switches that decide whether the tool should heal players and / or driveables
+	 */
 	public boolean healPlayers = false, healDriveables = false;
-	/** The amount to heal per use (one use per click) */
+	/**
+	 * The amount to heal per use (one use per click)
+	 */
 	public int healAmount = 0;
-	/** The amount of uses the tool has. 0 means infinite */
+	/**
+	 * The amount of uses the tool has. 0 means infinite
+	 */
 	public int toolLife = 0;
-	/** If true, the tool will destroy itself when finished. Disable this for rechargeable tools */
+	/**
+	 * If true, the tool will destroy itself when finished. Disable this for rechargeable tools
+	 */
 	public boolean destroyOnEmpty = true;
-	/** The items required to be added (shapelessly) to recharge the tool */
-	public ArrayList<ItemStack> rechargeRecipe = new ArrayList<ItemStack>();
-	/** Not yet implemented. For making tools chargeable with IC2 EU */
+	/**
+	 * The items required to be added (shapelessly) to recharge the tool
+	 */
+	public ArrayList<ItemStack> rechargeRecipe = new ArrayList<>();
+	/**
+	 * Not yet implemented. For making tools chargeable with IC2 EU
+	 */
 	public int EUPerCharge = 0;
-	/** If true, then this tool will deploy a parachute upon use (and consume itself) */
+	/**
+	 * If true, then this tool will deploy a parachute upon use (and consume itself)
+	 */
 	public boolean parachute = false;
-	/** If true, then this will detonate the least recently placed remote explosive */
+	/**
+	 * If true, then this will detonate the least recently placed remote explosive
+	 */
 	public boolean remote = false;
-	/** If > 0, then the player can eat this and recover this much hunger */
+	/**
+	 * If > 0, then the player can eat this and recover this much hunger
+	 */
 	public int foodness = 0;
 	
-	public ToolType(TypeFile file) 
+	public ToolType(TypeFile file)
 	{
 		super(file);
 	}
@@ -57,8 +74,10 @@ public class ToolType extends InfoType
 	{
 		tools.put(shortName, this);
 	}
-
-	/** Pack reader */
+	
+	/**
+	 * Pack reader
+	 */
 	@Override
 	protected void read(String[] split, TypeFile file)
 	{
@@ -96,8 +115,8 @@ public class ToolType extends InfoType
 				destroyOnEmpty = Boolean.parseBoolean(split[1].toLowerCase());
 			else if(split[0].equals("Food") || split[0].equals("Foodness"))
 				foodness = Integer.parseInt(split[1]);
-		} 
-		catch (Exception e)
+		}
+		catch(Exception e)
 		{
 			FlansMod.log.error("Reading file failed : " + shortName);
 			FlansMod.log.throwing(e);
@@ -113,7 +132,7 @@ public class ToolType extends InfoType
 			return;
 		rechargeRecipe.add(new ItemStack(item, 1, toolLife));
 		
-		NonNullList<Ingredient> ingredients = NonNullList.<Ingredient>create();
+		NonNullList<Ingredient> ingredients = NonNullList.create();
 		for(ItemStack stack : rechargeRecipe)
 		{
 			ingredients.add(Ingredient.fromStacks(stack));
@@ -125,12 +144,12 @@ public class ToolType extends InfoType
 	{
 		return tools.get(shortName);
 	}
-
+	
 	@Override
 	protected void preRead(TypeFile file)
-	{		
+	{
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ModelBase GetModel()

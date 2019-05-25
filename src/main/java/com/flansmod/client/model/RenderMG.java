@@ -4,27 +4,27 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
-import com.flansmod.client.FlansModResourceHandler;
+import com.flansmod.client.handlers.FlansModResourceHandler;
 import com.flansmod.common.guns.EntityMG;
 
-public class RenderMG extends Render
+public class RenderMG extends Render<EntityMG>
 {
-	public RenderMG(RenderManager renderManager) 
+	public RenderMG(RenderManager renderManager)
 	{
 		super(renderManager);
 		shadowSize = 0.5F;
 	}
-
-    public void render(EntityMG mg, double d, double d1, double d2, float f, float f1)
-    {
-    	bindEntityTexture(mg);
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float)d, (float)d1, (float)d2);
-
+	
+	@Override
+	public void doRender(EntityMG mg, double d, double d1, double d2, float f, float f1)
+	{
+		bindEntityTexture(mg);
+		GL11.glPushMatrix();
+		GL11.glTranslatef((float)d, (float)d1, (float)d2);
+		
 		GL11.glRotatef(180F - mg.direction * 90F, 0.0F, 1.0F, 0.0F);
 		ModelMG model = mg.type.deployableModel;
 		if(model == null)
@@ -35,23 +35,17 @@ public class RenderMG extends Render
 		model.renderGun(0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F, f1, mg);
 		GL11.glPopMatrix();
 	}
-
+	
 	@Override
-	public void doRender(Entity entity, double d, double d1, double d2, float f, float f1)
+	protected ResourceLocation getEntityTexture(EntityMG entity)
 	{
-		render((EntityMG)entity, d, d1, d2, f, f1);
-	}
-
-	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) 
-	{
-		return FlansModResourceHandler.getDeployableTexture(((EntityMG)entity).type);
+		return FlansModResourceHandler.getDeployableTexture(entity.type);
 	}
 	
-	public static class Factory implements IRenderFactory
+	public static class Factory implements IRenderFactory<EntityMG>
 	{
 		@Override
-		public Render createRenderFor(RenderManager manager) 
+		public Render<EntityMG> createRenderFor(RenderManager manager)
 		{
 			return new RenderMG(manager);
 		}

@@ -4,8 +4,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.flansmod.common.FlansMod;
 import net.minecraftforge.fml.common.Loader;
+
+import com.flansmod.common.FlansMod;
 
 public class ModelPool
 {
@@ -33,7 +34,7 @@ public class ModelPool
 		{
 			String absPath = new File(Loader.instance().getConfigDir().getParent(), resourceDir[i]).getAbsolutePath();
 			if(!absPath.endsWith("/") || !absPath.endsWith("\\"))
-				absPath+= "/";
+				absPath += "/";
 			modelFile = entry.checkValidPath(absPath + file);
 		}
 		if(modelFile == null || !modelFile.exists())
@@ -41,8 +42,8 @@ public class ModelPool
 			FlansMod.log.warn("The model with the name " + file + " does not exist.");
 			return null;
 		}
-		entry.groups = new HashMap<String, TransformGroupBone>();
-		entry.textures = new HashMap<String, TextureGroup>();
+		entry.groups = new HashMap<>();
+		entry.textures = new HashMap<>();
 		entry.name = file;
 		entry.setGroup("0");
 		entry.setTextureGroup("0");
@@ -52,11 +53,11 @@ public class ModelPool
 		return entry;
 	}
 	
-	private static Map<String, ModelPoolEntry> modelMap = new HashMap<String, ModelPoolEntry>();
-	private static String[] resourceDir = new String[] {
-						"/resources/models/",
-						"/resources/mod/models/",
-    						"/Flan/"
-		};
+	private static Map<String, ModelPoolEntry> modelMap = new HashMap<>();
+	private static String[] resourceDir = new String[]{
+			"/resources/models/",
+			"/resources/mod/models/",
+			"/Flan/"
+	};
 	public static final Class OBJ = ModelPoolObjEntry.class;
 }

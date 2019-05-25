@@ -67,14 +67,21 @@ public class GuiDriveableFuel extends GuiContainer
 	}
 	
 	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+	{
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
+	}
+	
+	@Override
 	protected void mouseClicked(int i, int j, int k) throws IOException
-    {
+	{
 		super.mouseClicked(i, j, k);
 		int m = i - (width - xSize) / 2;
 		int n = j - (height - ySize) / 2;
 		if(m > 161 && m < 171 && n > 5 && n < 15)
 		{
-			 mc.displayGuiScreen(new GuiDriveableMenu(inventory, world, plane));
+			mc.displayGuiScreen(new GuiDriveableMenu(inventory, world, plane));
 		}
 	}
 	

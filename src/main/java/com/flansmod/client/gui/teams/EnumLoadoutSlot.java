@@ -1,6 +1,6 @@
 package com.flansmod.client.gui.teams;
 
-public enum EnumLoadoutSlot 
+public enum EnumLoadoutSlot
 {
 	primary("Primary", true),
 	secondary("Secondary", true),
@@ -8,7 +8,7 @@ public enum EnumLoadoutSlot
 	melee("Melee", false),
 	armour("Armour", false);
 	
-	private EnumLoadoutSlot(String s, boolean b)
+	EnumLoadoutSlot(String s, boolean b)
 	{
 		name = s;
 		isWeapon = b;

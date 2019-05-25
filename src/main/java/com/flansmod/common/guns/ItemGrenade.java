@@ -3,8 +3,8 @@ package com.flansmod.common.guns;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -17,9 +17,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.flansmod.common.FlansMod;
 import com.flansmod.common.PlayerData;
@@ -27,13 +25,12 @@ import com.flansmod.common.PlayerHandler;
 import com.flansmod.common.types.IFlanItem;
 import com.flansmod.common.types.InfoType;
 import com.flansmod.common.vector.Vector3f;
-import com.google.common.collect.Multimap;
 
 public class ItemGrenade extends ItemShootable implements IFlanItem
 {
 	public GrenadeType type;
 	
-	public ItemGrenade(GrenadeType t) 
+	public ItemGrenade(GrenadeType t)
 	{
 		super(t);
 		type = t;
@@ -42,12 +39,16 @@ public class ItemGrenade extends ItemShootable implements IFlanItem
 	}
 	
 	@Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
-    {
-        Multimap multimap = super.getAttributeModifiers(slot, stack);
-        multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", type.meleeDamage, 0));
-        return multimap;
-    }
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+	{
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		
+		if(EntityEquipmentSlot.MAINHAND.equals(slot))
+		{
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", type.meleeDamage, 0));
+		}
+		return multimap;
+	}
 	
 	@Override
 	public boolean isFull3D()
@@ -88,7 +89,7 @@ public class ItemGrenade extends ItemShootable implements IFlanItem
 			{
 				String itemName = type.dropItemOnDetonate;
 				int damage = 0;
-				if (itemName.contains("."))
+				if(itemName.contains("."))
 				{
 					damage = Integer.parseInt(itemName.split("\\.")[1]);
 					itemName = itemName.split("\\.")[0];
@@ -96,46 +97,46 @@ public class ItemGrenade extends ItemShootable implements IFlanItem
 				ItemStack dropStack = InfoType.getRecipeElement(itemName, damage);
 				world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, dropStack));
 			}
-			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
-		return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+		return new ActionResult<>(EnumActionResult.FAIL, stack);
 	}
 	
 	@Override
-	public InfoType getInfoType() 
+	public InfoType getInfoType()
 	{
 		return type;
 	}
-
+	
 	@Override
 	public EntityShootable getEntity(World world, Vec3d origin, float yaw,
-			float pitch, double motionX, double motionY, double motionZ,
-			EntityLivingBase shooter, float gunDamage,
-			InfoType shotFrom) 
+									 float pitch, double motionX, double motionY, double motionZ,
+									 EntityLivingBase shooter, float gunDamage,
+									 InfoType shotFrom)
 	{
 		return null;
 	}
-
+	
 	@Override
 	public EntityShootable getEntity(World world, Vector3f origin,
-			Vector3f direction, EntityLivingBase thrower, float spread,
-			float damage, float speed, InfoType shotFrom) 
+									 Vector3f direction, EntityLivingBase thrower, float spread,
+									 float damage, float speed, InfoType shotFrom)
 	{
 		return getGrenade(world, thrower);
 	}
-
+	
 	@Override
 	public EntityShootable getEntity(World world, Vec3d origin, float yaw,
-			float pitch, EntityLivingBase shooter, float spread, float damage,
-			InfoType shotFrom)
+									 float pitch, EntityLivingBase shooter, float spread, float damage,
+									 InfoType shotFrom)
 	{
 		return null;
 	}
-
+	
 	@Override
 	public EntityShootable getEntity(World world, EntityLivingBase player,
-			float bulletSpread, float damage, float bulletSpeed, boolean b,
-			InfoType shotFrom) 
+									 float bulletSpread, float damage, float bulletSpeed, boolean b,
+									 InfoType shotFrom)
 	{
 		return getGrenade(world, player);
 	}
@@ -159,14 +160,14 @@ public class ItemGrenade extends ItemShootable implements IFlanItem
 		}
 	}
 	
-	public void Shoot(World world,
-			Vector3f origin,
-			Vector3f direction,
-			float damageModifier,
-			float spreadModifier,
-			float speedModifier,
-			InfoType shotFrom,
-			EntityLivingBase shooter)
+	public void shoot(World world,
+					  Vector3f origin,
+					  Vector3f direction,
+					  float damageModifier,
+					  float spreadModifier,
+					  float speedModifier,
+					  InfoType shotFrom,
+					  EntityLivingBase shooter)
 	{
 		EntityGrenade grenade = getGrenade(world, shooter);
 		world.spawnEntity(grenade);

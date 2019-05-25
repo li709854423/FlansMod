@@ -47,7 +47,7 @@ public class GuiDriveableMenu extends GuiContainer
 		buttonList.add(gunsButton);
 		
 		//Fuel button
-		GuiButton fuelButton = new GuiButton(2, width / 2 -60, height / 2 - 49, 58, 20, "Fuel");
+		GuiButton fuelButton = new GuiButton(2, width / 2 - 60, height / 2 - 49, 58, 20, "Fuel");
 		fuelButton.enabled = type.fuelTankSize > 0;
 		buttonList.add(fuelButton);
 		
@@ -117,6 +117,13 @@ public class GuiDriveableMenu extends GuiContainer
 		int j = (width - xSize) / 2;
 		int k = (height - ySize) / 2;
 		drawTexturedModalRect(j, k, 0, 0, xSize, ySize);
+	}
+	
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+	{
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
 	}
 	
 	@Override

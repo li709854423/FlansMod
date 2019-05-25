@@ -2,32 +2,30 @@ package com.flansmod.client.debug;
 
 import org.lwjgl.opengl.GL11;
 
-import com.flansmod.client.model.RenderGrenade;
-import com.flansmod.common.FlansMod;
-
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
-public class RenderDebugDot extends Render {
+import com.flansmod.common.FlansMod;
 
-	public RenderDebugDot(RenderManager renderManager) 
+public class RenderDebugDot extends Render<EntityDebugDot>
+{
+	
+	public RenderDebugDot(RenderManager renderManager)
 	{
 		super(renderManager);
 	}
-
+	
 	@Override
-	public void doRender(Entity entity, double d0, double d1, double d2, float f, float f1) 
+	public void doRender(EntityDebugDot entity, double d0, double d1, double d2, float f, float f1)
 	{
 		if(!FlansMod.DEBUG)
 			return;
-		EntityDebugDot ent = (EntityDebugDot)entity;
 		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glColor3f(ent.red, ent.green, ent.blue);
+		GL11.glColor3f(entity.getColorRed(), entity.getColorGreen(), entity.getColorBlue());
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)d0, (float)d1, (float)d2);
 		GL11.glPointSize(10F);
@@ -38,17 +36,17 @@ public class RenderDebugDot extends Render {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}
-
+	
 	@Override
-	protected ResourceLocation getEntityTexture(Entity p_110775_1_) 
+	protected ResourceLocation getEntityTexture(EntityDebugDot entity)
 	{
 		return null;
 	}
 	
-	public static class Factory implements IRenderFactory
+	public static class Factory implements IRenderFactory<EntityDebugDot>
 	{
 		@Override
-		public Render createRenderFor(RenderManager manager) 
+		public Render<EntityDebugDot> createRenderFor(RenderManager manager)
 		{
 			return new RenderDebugDot(manager);
 		}

@@ -1,27 +1,23 @@
 package com.flansmod.common.teams;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import com.flansmod.common.FlansMod;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeChunkManager.Type;
 
-public class TeamsMap 
+import com.flansmod.common.FlansMod;
+
+public class TeamsMap
 {
 	public String shortName;
 	public String name;
 	public Ticket chunkLoadingTicket;
-	public ArrayList<ITeamBase> bases = new ArrayList<ITeamBase>();
+	public ArrayList<ITeamBase> bases = new ArrayList<>();
 	public int minPlayers = 0, maxPlayers = 1000000;
-	public ArrayList<PermanentBaseData> permanentBaseData = new ArrayList<PermanentBaseData>();
+	public ArrayList<PermanentBaseData> permanentBaseData = new ArrayList<>();
 	
 	public TeamsMap(World world, String sn, String n)
 	{
@@ -31,7 +27,7 @@ public class TeamsMap
 	
 	public ArrayList<ITeamBase> getBasesPerTeam(int teamID)
 	{
-		ArrayList<ITeamBase> basesForThisTeam = new ArrayList<ITeamBase>();
+		ArrayList<ITeamBase> basesForThisTeam = new ArrayList<>();
 		for(ITeamBase base : bases)
 		{
 			if(base.getOwnerID() == teamID)
@@ -146,7 +142,7 @@ public class TeamsMap
 		tags.setInteger("NumBases", permanentBaseData.size());
 		for(int i = 0; i < permanentBaseData.size(); i++)
 		{
-			NBTTagCompound baseTags =  new NBTTagCompound();
+			NBTTagCompound baseTags = new NBTTagCompound();
 			permanentBaseData.get(i).writeBaseToNBT(baseTags);
 			tags.setTag("Base_" + i, baseTags);
 		}

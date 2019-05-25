@@ -5,8 +5,8 @@ import net.minecraft.util.math.Vec3d;
 
 /**
  * The PositionTransformGroup class adds a class which allows for vertex transformations.
- * @author GaryCXJk
  *
+ * @author GaryCXJk
  */
 public class TransformGroupBone extends TransformGroup
 {
@@ -26,9 +26,9 @@ public class TransformGroupBone extends TransformGroup
 	public Angle3D getTransformAngle()
 	{
 		Angle3D returnAngle = attachedBone.getAbsoluteAngle().copy();
-		returnAngle.angleX-= baseAngles.angleX;
-		returnAngle.angleY-= baseAngles.angleY;
-		returnAngle.angleZ-= baseAngles.angleZ;
+		returnAngle.angleX -= baseAngles.angleX;
+		returnAngle.angleY -= baseAngles.angleY;
+		returnAngle.angleZ -= baseAngles.angleZ;
 		return returnAngle;
 	}
 	
@@ -73,29 +73,26 @@ public class TransformGroupBone extends TransformGroup
 	
 	protected void setVectorRotations(Vec3d vector, float xRot, float yRot, float zRot)
 	{
-		float x = xRot;
-		float y = yRot;
-		float z = zRot;
-		float xC = MathHelper.cos(x);
-		float xS = MathHelper.sin(x);
-		float yC = MathHelper.cos(y);
-		float yS = MathHelper.sin(y);
-		float zC = MathHelper.cos(z);
-		float zS = MathHelper.sin(z);
-
+		float xC = MathHelper.cos(xRot);
+		float xS = MathHelper.sin(xRot);
+		float yC = MathHelper.cos(yRot);
+		float yS = MathHelper.sin(yRot);
+		float zC = MathHelper.cos(zRot);
+		float zS = MathHelper.sin(zRot);
+		
 		double xVec = vector.x;
 		double yVec = vector.y;
 		double zVec = vector.z;
-
+		
 		// rotation around x
-		double xy = xC*yVec - xS*zVec;
-		double xz = xC*zVec + xS*yVec;
+		double xy = xC * yVec - xS * zVec;
+		double xz = xC * zVec + xS * yVec;
 		// rotation around y
-		double yz = yC*xz - yS*xVec;
-		double yx = yC*xVec + yS*xz;
+		double yz = yC * xz - yS * xVec;
+		double yx = yC * xVec + yS * xz;
 		// rotation around z
-		double zx = zC*yx - zS*xy;
-		double zy = zC*xy + zS*yx;
+		double zx = zC * yx - zS * xy;
+		double zy = zC * xy + zS * yx;
 		
 		xVec = zx;
 		yVec = zy;
