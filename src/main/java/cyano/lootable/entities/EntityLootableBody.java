@@ -277,7 +277,6 @@ public class EntityLootableBody extends EntityLiving implements IInventory {
 
     @Override
     public void applyEntityCollision(Entity entityIn) {
-        System.out.println("2");
     }
 
     @Override

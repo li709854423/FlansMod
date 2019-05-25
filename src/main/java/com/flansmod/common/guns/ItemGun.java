@@ -1203,7 +1203,7 @@ public class ItemGun extends Item implements IPaintableItem
 			Collections.addAll(lines, type.description.split("_"));
 		}
 		if(type.showDamage)
-			lines.add("\u00a79Damage" + "\u00a77: " + type.getDamage(stack));
+			lines.add("\u00a79伤害" + "\u00a77: " + type.getDamage(stack));
 		if(type.showRecoil)
 			lines.add("\u00a79Recoil" + "\u00a77: " + type.getRecoil(stack));
 		if(type.showSpread)

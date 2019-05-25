@@ -30,12 +30,10 @@ public class TickListener {
     @Mod.EventHandler
     @SubscribeEvent
     public void PlayerDied(LivingDeathEvent event) {
-        System.out.println("死了");
         EntityLivingBase entityLiving = event.getEntityLiving();
         PotionEffect potionEffect = entityLiving.getActivePotionMap().get(PotionConfine.instance);
         if (potionEffect!=null){
             entityLiving.removePotionEffect(PotionConfine.instance);
-
         }
     }
 }

@@ -173,6 +173,10 @@ public class ClientProxy extends CommonProxy
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(FlansMod.paintjobTable), 0, new ModelResourceLocation("flansmod:paintjobTable", "inventory"));
 		ModelLoader.registerItemVariants(Item.getItemFromBlock(FlansMod.paintjobTable), 
 				new ResourceLocation[] {new ResourceLocation("flansmod:paintjobTable")});
+		ModelLoader.setCustomModelResourceLocation(FlansMod.bandaid, 0, new ModelResourceLocation("flansmod:bandaid"));
+		ModelLoader.setCustomModelResourceLocation(FlansMod.diedayao, 0, new ModelResourceLocation("flansmod:diedayao"));
+		ModelLoader.setCustomModelResourceLocation(FlansMod.medkit, 0, new ModelResourceLocation("flansmod:medkit"));
+
 	}
 		
 	/** This method reloads all textures from all mods and resource packs. It forces Minecraft to read images from the content packs added after mod init */

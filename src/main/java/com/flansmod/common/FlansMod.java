@@ -7,6 +7,9 @@ import com.flansmod.common.eventhandlers.TickListener;
 import com.flansmod.common.guns.*;
 import com.flansmod.common.guns.boxes.BlockGunBox;
 import com.flansmod.common.guns.boxes.GunBoxType;
+import com.flansmod.common.item.ItemBandaid;
+import com.flansmod.common.item.ItemDieDaYao;
+import com.flansmod.common.item.ItemMedkit;
 import com.flansmod.common.network.PacketHandler;
 import com.flansmod.common.paintjob.BlockPaintjobTable;
 import com.flansmod.common.paintjob.TileEntityPaintjobTable;
@@ -81,7 +84,7 @@ public class FlansMod
 	public static boolean DEBUG = false;
 	public static Configuration configFile;
 	public static final String MODID = "flansmod";
-	public static final String VERSION = "@VERSION@";
+	public static final String VERSION = "5.5.2";
 	@Instance(MODID)
 	public static FlansMod INSTANCE;
 
@@ -130,11 +133,19 @@ public class FlansMod
 
 	/** Custom paintjob item */
 	public static Item rainbowPaintcan;
+	//创口贴
+	public static Item bandaid;
+	//跌打药
+	public static Item diedayao;
+	//医疗包
+	public static Item medkit;
+
 	public static BlockPaintjobTable paintjobTable;
 
 	private static Random rewardsRandom = new Random();
 
 	public static float Pick(float totalWeight) { return rewardsRandom.nextFloat() * totalWeight; }
+
 
 	/** The mod pre-initialiser method */
 	@EventHandler
@@ -154,7 +165,6 @@ public class FlansMod
 		//TODO : Load properties
 		//configuration = new Configuration(event.getSuggestedConfigurationFile());
 		//loadProperties();
-		
 		try
 		{
 			isApocalypseLoaded = true;
@@ -184,7 +194,11 @@ public class FlansMod
 		paintjobTable = new BlockPaintjobTable();
 		workbenchItem = new ItemBlockManyNames(workbench);
 		spawnerItem = new ItemBlockManyNames(spawner);
-		
+		//创口贴注册
+		bandaid=new ItemBandaid();
+		diedayao=new ItemDieDaYao();
+		medkit=new ItemMedkit();
+
 		
 		GameRegistry.registerTileEntity(TileEntitySpawner.class, "teamsSpawner");
 		GameRegistry.registerTileEntity(TileEntityPaintjobTable.class, "paintjobTable");
@@ -300,6 +314,10 @@ public class FlansMod
 		
 		event.getRegistry().register(workbenchItem);
 		event.getRegistry().register(spawnerItem);
+		//注册创口贴
+		event.getRegistry().register(bandaid);
+		event.getRegistry().register(diedayao);
+		event.getRegistry().register(medkit);
 	}
 	
 	@SubscribeEvent
@@ -592,7 +610,7 @@ public class FlansMod
 		List<File> contentPacks = proxy.getContentList(method, classloader);
 
 		//TODO : Add gametype loader
-		getTypeFiles(contentPacks);
+		getTypeFiles		(contentPacks);
 		
 		for(EnumType type : EnumType.values())
 		{
