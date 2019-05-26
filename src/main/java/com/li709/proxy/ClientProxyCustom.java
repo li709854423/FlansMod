@@ -38,9 +38,9 @@ public class ClientProxyCustom {
 
 	public static void registerModels(ModelRegistryEvent event){
 		//注册跌打药，绷带，医疗包
-		ModelLoader.setCustomModelResourceLocation(CustomInitFlan.bandaid, 0, new ModelResourceLocation(CustomInitFlan.ID,"bandaid"));
-		ModelLoader.setCustomModelResourceLocation(CustomInitFlan.diedayao, 0, new ModelResourceLocation(CustomInitFlan.ID,"diedayao"));
-		ModelLoader.setCustomModelResourceLocation(CustomInitFlan.medkit, 0, new ModelResourceLocation(CustomInitFlan.ID,"medkit"));
+		ModelLoader.setCustomModelResourceLocation(CustomInitFlan.bandaid, 0, new ModelResourceLocation(CustomInitFlan.ID+":"+"bandaid"));
+		ModelLoader.setCustomModelResourceLocation(CustomInitFlan.diedayao, 0, new ModelResourceLocation(CustomInitFlan.ID+":"+"diedayao"));
+		ModelLoader.setCustomModelResourceLocation(CustomInitFlan.medkit, 0, new ModelResourceLocation(CustomInitFlan.ID+":"+"medkit"));
 	}
 
 

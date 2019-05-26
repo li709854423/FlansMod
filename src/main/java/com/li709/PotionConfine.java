@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
  * /effect @a flansmod:potion_confine
  */
 public class PotionConfine extends Potion {
-    public static ResourceLocation tex = new ResourceLocation("flansmod", "textures/potion/confine.png");
+    public static ResourceLocation tex = new ResourceLocation(CustomInitFlan.ID, "textures/potion/confine.png");
     public static PotionConfine instance;
     public PotionConfine() {
         super(false, 0xFFFAF0);

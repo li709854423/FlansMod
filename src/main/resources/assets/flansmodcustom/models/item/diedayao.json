@@ -1,7 +1,7 @@
 {
 	"parent": "builtin/generated",
 	"textures": {
-		"layer0": "flansmod:items/diedayao"
+		"layer0": "flansmodcustom:items/diedayao"
 	},
 	"display": {
 		"thirdperson": {

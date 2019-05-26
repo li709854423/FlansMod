@@ -295,18 +295,16 @@ public class FlansMod
 	public void registerItems(RegistryEvent.Register<Item> event)
 	{
 		log.info("Registering Items");
-		
 		for(InfoType type : InfoType.infoTypes.values())
 		{
 			type.registerItem(event.getRegistry());
 		}
-		
 		event.getRegistry().register(rainbowPaintcan); //, "rainbowPaintcan", MODID);
 		event.getRegistry().register(opStick); //, "opStick", MODID);
 		event.getRegistry().register(flag); //, "flagpole", MODID);
-		
 		event.getRegistry().register(workbenchItem);
 		event.getRegistry().register(spawnerItem);
+		CustomInitFlan.registerItems(event);
 	}
 	
 	@SubscribeEvent

@@ -1,6 +1,7 @@
 package com.li709.entity;
 
 import com.flansmod.common.FlansMod;
+import com.flansmod.common.guns.EntityDamageSourceGun;
 import com.li709.lootable.LootableBodies;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.material.Material;
@@ -257,6 +258,9 @@ public class EntityLootableBody extends EntityLiving implements IInventory {
      * Called when the entity is attacked.
      */
     public boolean attackEntityFrom(DamageSource source, float amount) {
+		if (source instanceof EntityDamageSourceGun){
+			return false;
+		}
         if (this.getHealth() <= 0.0F) {
             return false;
         }

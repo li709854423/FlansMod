@@ -27,7 +27,7 @@ public class BleedingManager {
      */
     public static void onUpdate(){
         i++;
-        if (i==60){
+        if (i==100){
             i=0;
             MinecraftServer minecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
             EntityLivingBase entityLivingBase;
@@ -38,7 +38,7 @@ public class BleedingManager {
                     entityLivingBase= (EntityLivingBase) entity;
                     double maxValue = entityLivingBase.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue();
                     num=maxValue*0.01>1?maxValue*0.01:1;
-                    entityLivingBase.attackEntityFrom(DamageSource.FIREWORKS, num.floatValue());
+                    entityLivingBase.attackEntityFrom(DamageSource.MAGIC, num.floatValue());
                 }
             }
         }

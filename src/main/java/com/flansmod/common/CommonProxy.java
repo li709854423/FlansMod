@@ -79,6 +79,7 @@ public class CommonProxy
 	
 	public void init()
 	{
+		CommonProxyCustom.init();
 	}
 	
 	public void forceReload()

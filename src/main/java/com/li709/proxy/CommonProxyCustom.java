@@ -1,6 +1,7 @@
 package com.li709.proxy;
 
 import com.li709.entity.EntityLootableBody;
+import com.li709.listener.TickListener;
 import com.li709.lootable.LootableBodies;
 import com.li709.lootable.render.CorpseContainer;
 import net.minecraft.entity.Entity;
@@ -17,6 +18,10 @@ public class CommonProxyCustom {
 		LootableBodies.preInit(FMLCommonHandler.instance().getMinecraftServerInstance().getDataDirectory());
 	}
 
+	public static void init(){
+		//每tick操作
+		new TickListener();
+	}
 
 	public static Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		//初始化服务端尸体的GUI
