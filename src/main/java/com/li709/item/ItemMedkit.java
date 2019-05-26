@@ -34,7 +34,7 @@ public class ItemMedkit extends Item {
         playerIn.removePotionEffect(PotionConfine.instance);
         //回20%的血量
         float v = playerIn.getMaxHealth() * 0.2f;
-        playerIn.setHealth(playerIn.getHealth()+v);
+        playerIn.heal(v);
 
         //扣除一
         playerIn.getHeldItem(handIn).shrink(1);
