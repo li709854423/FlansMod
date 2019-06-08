@@ -20,7 +20,7 @@ public class ItemBandaid extends Item {
         setHasSubtypes(false);
         setCreativeTab(FlansMod.tabFlanMechas);
         setRegistryName("bandaid");
-        setTranslationKey("bandaid");
+		setUnlocalizedName("bandaid");
     }
 
     @Override

@@ -19,7 +19,7 @@ public class ClientProxyCustom {
 
 	public static void preInit() {
 		//加载 LootableBodies
-		LootableBodies.preInit(Minecraft.getMinecraft().gameDir);
+		LootableBodies.preInit(Minecraft.getMinecraft().mcDataDir);
 		//注册尸体
 		RenderingRegistry.registerEntityRenderingHandler(EntityLootableBody.class, rm -> (new CorpseRenderer(rm)));
 	}

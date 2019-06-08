@@ -24,7 +24,7 @@ public class ItemMedkit extends Item {
         setHasSubtypes(false);
         setCreativeTab(FlansMod.tabFlanMechas);
         setRegistryName("medkit");
-        setTranslationKey("medkit");
+		setUnlocalizedName("medkit");
     }
 
     @Override

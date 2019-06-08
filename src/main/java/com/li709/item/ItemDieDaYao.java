@@ -21,7 +21,7 @@ public class ItemDieDaYao extends Item {
         setHasSubtypes(false);
         setCreativeTab(FlansMod.tabFlanMechas);
         setRegistryName("diedayao");
-		setTranslationKey("diedayao");
+		setUnlocalizedName("diedayao");
     }
 
     @Override
